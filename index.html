@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dayflow — HRMS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          ink: '#1B2333',
+          paper: '#F5F6F8',
+          primary: { DEFAULT:'#2F5DE3', dark:'#2447BE', light:'#EEF1FE' },
+          success: { DEFAULT:'#3E9C6F', light:'#E7F5EE' },
+          warning: { DEFAULT:'#D98E2B', light:'#FBF1E1' },
+          danger:  { DEFAULT:'#E15252', light:'#FCEAEA' },
+        },
+        fontFamily: {
+          display: ['Sora','sans-serif'],
+          sans: ['Inter','sans-serif'],
+        },
+        boxShadow: {
+          card: '0 1px 2px rgba(27,35,51,0.06), 0 1px 12px rgba(27,35,51,0.05)',
+        }
+      }
+    }
+  }
+</script>
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="text-ink">
+<div id="root"></div>
+<div id="toast-root" class="fixed bottom-5 right-5 z-[100] flex flex-col gap-2 items-end"></div>
+
+<!-- Data layer, utilities, and view modules — load order matters since these
+     are plain scripts (no bundler) that share the global scope. -->
+<script src="js/utils.js"></script>
+<script src="js/data.js"></script>
+<script src="js/icons.js"></script>
+<script src="js/components.js"></script>
+<script src="js/layout.js"></script>
+<script src="js/view-auth.js"></script>
+<script src="js/view-dashboard.js"></script>
+<script src="js/view-attendance.js"></script>
+<script src="js/view-leave.js"></script>
+<script src="js/view-payroll.js"></script>
+<script src="js/view-profile.js"></script>
+<script src="js/view-employees.js"></script>
+<script src="js/view-analytics.js"></script>
+<script src="js/view-notifications.js"></script>
+<script src="js/router.js"></script>
+</body>
+</html>

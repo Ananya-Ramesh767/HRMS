@@ -1,0 +1,16 @@
+html,body{ font-family:'Inter',sans-serif; background:#F5F6F8; }
+  .font-display{ font-family:'Sora',sans-serif; }
+  ::-webkit-scrollbar{ width:8px; height:8px; }
+  ::-webkit-scrollbar-thumb{ background:#D7DAE3; border-radius:8px; }
+  ::-webkit-scrollbar-track{ background:transparent; }
+  .flow-bar{ background:linear-gradient(90deg,#2F5DE3 0%,#7C93F0 50%,#3E9C6F 100%); }
+  .status-dot{ width:9px; height:9px; border-radius:999px; display:inline-block; }
+  [data-view]{ animation: fadein .18s ease; }
+  @keyframes fadein{ from{ opacity:0; transform:translateY(3px);} to{opacity:1; transform:translateY(0);} }
+  .toast-enter{ animation: slideup .2s ease; }
+  @keyframes slideup{ from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);} }
+  input:focus, select:focus, textarea:focus, button:focus-visible, a:focus-visible { outline: 2px solid #2F5DE3; outline-offset: 1px; }
+  table.dl-table th{ text-align:left; font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:#6B7280; font-weight:600; padding:10px 14px; border-bottom:1px solid #E7E9EF; }
+  table.dl-table td{ padding:12px 14px; border-bottom:1px solid #F0F1F5; font-size:14px; color:#1B2333; }
+  table.dl-table tr:last-child td{ border-bottom:none; }
+  .bar-track{ background:#EEF0F4; border-radius:999px; overflow:hidden; }
