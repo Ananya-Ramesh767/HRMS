@@ -1,102 +1,159 @@
 # Dayflow — HRMS
 
-A hackathon MVP for the Odoo × NMIT Bangalore selection round. Employee & HR
-workflows for attendance, time off, payroll, and profiles, built as a
-static, no-build front end.
+## Odoo × NMIT Bangalore Hackathon Project
 
-## Tech stack
+Dayflow is a lightweight Human Resource Management System (HRMS) web application developed for the **Odoo × NMIT Bangalore Hackathon**. It provides a simple, interactive platform for managing employee and HR workflows such as attendance, breaks, leave, payroll, employee profiles, and HR analytics.
 
-- Plain HTML / CSS / JavaScript (no framework, no bundler)
-- [Tailwind CSS](https://tailwindcss.com) via CDN for styling
-- `localStorage` as a mock data layer, standing in for a backend/API
+🔗 **Live Demo:** https://ananya-ramesh767.github.io/HRMS/
 
-No `npm install` or build step is required — this is intentional for a
-fast, dependency-free hackathon demo. See **Next steps** below for how this
-slots into a real backend later.
+## Quick Start
 
-## Running it
+No installation or setup is required.
 
-Open `index.html` directly in a browser, or serve the folder with any
-static file server, e.g.:
+Simply open `index.html` in a browser, or visit the live demo:
 
-```bash
-npx serve .
-# or
-python3 -m http.server 8080
-```
+**Live Demo:** https://ananya-ramesh767.github.io/HRMS/
 
-Then visit the served URL (or just double-click `index.html`).
+The application runs entirely on the client side using HTML, CSS, JavaScript, and browser `localStorage`.
 
-## Demo credentials
+## Demo Login
 
-| Role     | Email                       | Password    |
-|----------|------------------------------|-------------|
-| HR/Admin | `hr@dayflow.io`               | `Admin@123` |
-| Employee | `rahul.verma@dayflow.io`      | `Emp@123`   |
+| Role     | Email                    | Password    |
+| -------- | ------------------------ | ----------- |
+| HR/Admin | `hr@dayflow.io`          | `Admin@123` |
+| Employee | `rahul.verma@dayflow.io` | `Emp@123`   |
 
-You can also use **Sign Up** to create a new Employee account — self
-sign-up is intentionally restricted to the Employee role; HR/Admin accounts
-are created from the Employees page by an existing HR user, with an
-auto-generated Login ID and temporary password.
+New employees can also create an account using the **Sign Up** tab.
 
-## Project structure
+## Tech Stack
 
-```
+* **HTML / CSS / JavaScript** — no framework and no build step
+* **Tailwind CSS** — loaded through CDN
+* **localStorage** — used as a mock backend and data layer
+* **Responsive UI** — designed for convenient use across different screen sizes
+
+## Key Features
+
+### Role-Based Access
+
+* Separate **HR/Admin** and **Employee** views
+* Role-specific dashboards and permissions
+* Employees can manage their own information
+* HR/Admin can manage and monitor employee-related workflows
+
+### Attendance & Break Tracking
+
+* Employee check-in and check-out
+* Attendance history
+* Daily attendance tracking
+* Break tracking during working hours
+* HR dashboard with live attendance status and activity overview
+
+### Leave Management
+
+* Employees can apply for leave
+* Leave request history and status tracking
+* HR can approve or reject leave requests
+* Support for **proof-of-leave attachments**
+* Pending leave requests are visible to HR/Admin for quick action
+
+### Payroll
+
+* Employee payroll information and salary breakdown
+* HR-editable payroll details
+* Clear presentation of salary and financial information
+* Illustrative payroll data for demonstration purposes
+
+### Employee Profiles
+
+* Individual employee profile pages
+* **Profile photos for individual employees**
+* Editable **About** sections for personalized employee information
+* Employees can update their own profile details
+* Support for Skills and Certifications
+* Bank and Private Information sections
+* HR can view employee profiles while Work Information remains HR-managed
+
+### HR Dashboard & Analytics
+
+* Live attendance pulse
+* Pending leave approvals
+* Employee overview
+* Attendance and workflow analytics
+* Interactive charts and dashboard statistics
+
+### Notifications
+
+* Centralized notification view
+* Updates related to attendance, leave, payroll, and HR actions
+* Helps employees and HR stay informed about important activities
+
+## Project Workflow
+
+The application follows a simple HR workflow:
+
+**Authentication → Dashboard → Attendance & Breaks → Leave Management → Payroll → Employee Profiles → Notifications & Analytics**
+
+This provides employees with the tools they need for everyday HR activities while giving HR/Admin users centralized control over employee management and approvals.
+
+## Project Structure
+
+```text
 dayflow-hrms/
-├── index.html            # shell + script load order
+├── index.html
 ├── css/
-│   └── styles.css        # small custom CSS layer on top of Tailwind
+│   └── styles.css
 └── js/
-    ├── utils.js           # formatting/date/string helpers
-    ├── data.js             # mock data layer: seed data, auth, attendance,
-    │                       #   leave, payroll, notifications (swap this
-    │                       #   module out for real API calls later)
-    ├── icons.js            # inline SVG icon set
-    ├── components.js       # shared UI: badges, stat cards, modals, toasts
-    ├── layout.js            # sidebar / header shell + auth page shell
-    ├── view-auth.js         # sign in / sign up
-    ├── view-dashboard.js    # employee + HR dashboards
-    ├── view-attendance.js   # check-in/out, attendance history
-    ├── view-leave.js        # apply / approve / reject time off
-    ├── view-payroll.js      # salary breakdown, HR wage editing
-    ├── view-profile.js      # profile view (self + view-only for others)
-    ├── view-employees.js    # HR employee directory + add employee
-    ├── view-analytics.js    # HR analytics
-    ├── view-notifications.js
-    └── router.js             # hash router + app bootstrap
+    ├── data.js
+    ├── utils.js
+    ├── icons.js
+    ├── components.js
+    ├── layout.js
+    ├── router.js
+    └── view-*.js
+        ├── authentication
+        ├── dashboard
+        ├── attendance
+        ├── leave
+        ├── payroll
+        ├── profile
+        ├── employees
+        ├── analytics
+        └── notifications
 ```
 
-Scripts are loaded as plain `<script>` tags in dependency order (no ES
-modules), so every file shares the global scope — that's what keeps this
-buildless. If the team moves to React/Vite later, each `js/view-*.js` file
-maps closely to one page component, and `data.js` maps to a services layer.
+### Main JavaScript Modules
 
-## What's mock / demo data
+* `data.js` — mock data layer, seed data, authentication, and business logic
+* `utils.js` — reusable helper functions
+* `icons.js` — application icons
+* `components.js` — reusable UI components
+* `layout.js` — common application layout
+* `router.js` — page navigation and routing
+* `view-*.js` — individual application pages and workflows
 
-- All employees, attendance history, leave requests, and notifications are
-  seeded on first load into `localStorage` (see `seedDB()` in `data.js`).
-- Salary figures are illustrative — no real financial processing occurs.
-- Refreshing the page preserves state (it's read from `localStorage`), but
-  clearing site data or using a different browser resets to the seed data.
+## Data & Storage
 
-## How dynamic data is handled
+Dayflow is designed as a fully self-contained frontend application.
 
-Every user action (check in/out, apply/approve/reject leave, edit payroll,
-add an employee, mark a notification read) goes through a function in
-`data.js` that mutates the `localStorage`-backed store and returns a
-result object (`{ ok, error }` or `{ ok, ...data }`). Views never touch
-`localStorage` directly. After a successful mutation the app calls
-`render()` to re-draw the current page from the updated state, so the
-dashboard, attendance history, and notifications all stay in sync without a
-page reload.
+* Initial application data is seeded into browser `localStorage`
+* No external database or backend server is required
+* User actions update the stored application state
+* Refreshing the page preserves the current state
+* Clearing browser storage resets the application to its initial seed data
 
-## Known gaps / next steps
+## Notes for Evaluators
 
-- No real backend — swap `data.js` for real API calls behind the same
-  function signatures to connect a server.
-- Passwords are stored as plain strings in `localStorage` for demo
-  purposes only — never do this in production; use a real auth service
-  with hashed passwords server-side.
-- No automated tests yet.
-- Leave-day counting excludes Sundays only; it doesn't yet account for
-  public holidays or half-days.
+* The application is completely self-contained and can be demonstrated without server-side setup.
+* Demo accounts are provided for both HR/Admin and Employee roles.
+* Salary and financial figures are **illustrative demo data only**.
+* Browser `localStorage` is used as a mock backend/data layer.
+* The application demonstrates complete frontend workflows for attendance, break tracking, leave management, payroll, profiles, notifications, and HR analytics.
+
+## Conclusion
+
+Dayflow is a practical HRMS prototype that brings essential employee and HR workflows together in a single, easy-to-use platform. Built for the **Odoo × NMIT Bangalore Hackathon**, it focuses on clear role-based access, efficient HR operations, employee self-service, and an interactive user experience.
+
+By combining attendance and break tracking, leave management with proof attachments, payroll, personalized employee profiles, profile photos, notifications, and HR analytics, Dayflow demonstrates how a lightweight web-based HRMS can simplify everyday workforce management while remaining simple, self-contained, and easy to use.
+
+**Dayflow — Simplifying HR management through a unified, employee-friendly digital experience.**
