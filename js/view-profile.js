@@ -5,7 +5,10 @@ function viewProfile(user){
   const target = db.employees.find(e => e.id === targetId) || user;
   const isOwner = target.id === user.id;
   const isHR = user.role === 'hr';
-  const canEdit = isOwner || isHR;
+  const canEdit = isOwner || isHR; // Work Info & profile photo — HR manages job/role details
+  const canEditSensitive = isOwner; // About, Skills, Certifications, Private Info, Bank Details — owner-only.
+  // HR can view every employee's record for directory/reporting purposes, but per policy
+  // cannot modify an employee's personal narrative, skills, or sensitive financial/private data.
   const completeness = calcProfileCompleteness(target);
   const certs = target.certifications || [];
 
@@ -102,7 +105,7 @@ function viewProfile(user){
           <h2 class="font-display font-extrabold text-base text-ink flex items-center gap-2">
             <span class="w-2.5 h-2.5 rounded-full bg-purple-600"></span> About &amp; Personal Story
           </h2>
-          ${canEdit ? `
+          ${canEditSensitive ? `
             <button id="edit-about-btn" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-purple-50 text-slate-600 hover:text-purple-600 text-xs font-bold transition">
               ${icon('edit','w-3.5 h-3.5')} Edit
             </button>
@@ -139,7 +142,7 @@ function viewProfile(user){
           <h2 class="font-display font-extrabold text-base text-ink flex items-center gap-2">
             <span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span> Skills &amp; Superpowers
           </h2>
-          ${canEdit ? `
+          ${canEditSensitive ? `
             <button id="add-skill-btn" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-bold transition">
               ${icon('plus','w-3.5 h-3.5')} Add Skill
             </button>
@@ -149,7 +152,7 @@ function viewProfile(user){
           ${(target.skills && target.skills.length) ? target.skills.map(s => `
             <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-indigo-50 to-purple-50 text-indigo-700 border border-indigo-100/80 text-xs font-bold shadow-2xs">
               <span>⚡</span> ${esc(s)}
-              ${canEdit ? `<button data-remove-skill="${esc(s)}" class="w-4 h-4 rounded-full hover:bg-indigo-200/80 text-indigo-400 hover:text-indigo-800 flex items-center justify-center transition" title="Remove skill">×</button>` : ''}
+              ${canEditSensitive ? `<button data-remove-skill="${esc(s)}" class="w-4 h-4 rounded-full hover:bg-indigo-200/80 text-indigo-400 hover:text-indigo-800 flex items-center justify-center transition" title="Remove skill">×</button>` : ''}
             </span>
           `).join('') : `<p class="text-xs text-slate-400 italic">No skills added yet.</p>`}
         </div>
@@ -161,7 +164,7 @@ function viewProfile(user){
           <h2 class="font-display font-extrabold text-base text-ink flex items-center gap-2">
             <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span> Professional Certifications
           </h2>
-          ${canEdit ? `
+          ${canEditSensitive ? `
             <button id="add-cert-btn" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 text-xs font-bold transition">
               ${icon('plus','w-3.5 h-3.5')} Add Certification
             </button>
@@ -189,7 +192,7 @@ function viewProfile(user){
                       ${icon('download','w-4 h-4')}
                     </a>
                   ` : ''}
-                  ${canEdit ? `
+                  ${canEditSensitive ? `
                     <button data-edit-cert="${c.id}" class="p-2 rounded-xl text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 transition" title="Edit">
                       ${icon('edit','w-4 h-4')}
                     </button>
@@ -201,7 +204,11 @@ function viewProfile(user){
               </div>
             `).join('')}
           </div>
-        ` : EmptyState('No certifications added yet', canEdit ? 'Showcase your industry credentials and licenses here.' : 'No certificates recorded.')}
+        ` : EmptyState(
+            'No certifications yet',
+            canEditSensitive ? 'Showcase your professional achievements by adding your first certification.' : 'No certificates recorded.',
+            canEditSensitive ? `<button id="add-cert-empty-btn" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-extrabold shadow-sm transition">${icon('plus','w-3.5 h-3.5')} Add Certification</button>` : ''
+          )}
       </div>
     </div>
 
@@ -213,7 +220,7 @@ function viewProfile(user){
           <h2 class="font-display font-extrabold text-base text-ink flex items-center gap-2">
             <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span> Private Information
           </h2>
-          ${canEdit ? `
+          ${canEditSensitive ? `
             <button id="edit-private-btn" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-rose-50 text-slate-600 hover:text-rose-600 text-xs font-bold transition">
               ${icon('edit','w-3.5 h-3.5')} Edit
             </button>
@@ -237,7 +244,7 @@ function viewProfile(user){
           <h2 class="font-display font-extrabold text-base text-ink flex items-center gap-2">
             <span class="w-2.5 h-2.5 rounded-full bg-teal-500"></span> Bank Details (Direct Deposit)
           </h2>
-          ${canEdit ? `
+          ${canEditSensitive ? `
             <button id="edit-bank-btn" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-teal-50 text-slate-600 hover:text-teal-600 text-xs font-bold transition">
               ${icon('edit','w-3.5 h-3.5')} Edit
             </button>
@@ -533,9 +540,7 @@ function bindProfile(user){
 
   // About Modal
   const editAboutBtn = $('#edit-about-btn');
-  if(editAboutBtn) editAboutBtn.addEventListener('click', () => editAboutModal(emp));
-
-  // Private Info Modal
+  if(editAboutBtn) editAboutBtn.addEventListener('click', () => editAboutModal(emp));  // Private Info Modal
   const editPrivateBtn = $('#edit-private-btn');
   if(editPrivateBtn) editPrivateBtn.addEventListener('click', () => editPrivateInfoModal(emp));
 
@@ -570,6 +575,9 @@ function bindProfile(user){
   // Add Certification
   const addCertBtn = $('#add-cert-btn');
   if(addCertBtn) addCertBtn.addEventListener('click', () => certModal(targetId, null));
+
+  const addCertEmptyBtn = $('#add-cert-empty-btn');
+  if(addCertEmptyBtn) addCertEmptyBtn.addEventListener('click', () => certModal(targetId, null));
 
   // Edit Certification
   $$('[data-edit-cert]').forEach(btn => {

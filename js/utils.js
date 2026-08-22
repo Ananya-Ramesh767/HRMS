@@ -16,6 +16,8 @@ const AVATAR_COLORS = ['#4F46E5','#059669','#D97706','#7C3AED','#0284C7','#DB277
 const avatarColor = seed => AVATAR_COLORS[Math.abs([...String(seed||'OI')].reduce((a,c)=>a+c.charCodeAt(0),0)) % AVATAR_COLORS.length];
 const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const phoneRe = /^[0-9+() -]{7,15}$/;
+const panRe = /^[A-Z]{5}[0-9]{4}[A-Z]$/;
+const uanRe = /^[0-9]{12}$/;
 
 const fmtDuration = ms => {
   if(!ms || ms<=0) return '0m';

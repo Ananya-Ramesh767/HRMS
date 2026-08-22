@@ -264,6 +264,50 @@ function viewHRDashboard(user){
   const absentToday = emps.length - presentToday - onLeaveToday - onBreakToday;
   const pending = getPendingLeaves();
   const totalMonthlyPayroll = emps.reduce((acc,e) => acc + computeSalary(e.wage).netSalary, 0);
+  const attendancePct = emps.length ? Math.round(((presentToday+onBreakToday)/emps.length)*100) : 0;
+
+  // "Today's HR Pulse" — a plain-language narrative summary of the day's numbers,
+  // sitting above the detailed stat cards/breakdowns below.
+  const pulseTone = attendancePct >= 90
+    ? { emoji:'🎉', headline:'Team attendance is looking great!' }
+    : attendancePct >= 75
+    ? { emoji:'👍', headline:'Team attendance is holding steady.' }
+    : { emoji:'👀', headline:'Attendance is a bit lower than usual today.' };
+  const pulseAction = pending.length
+    ? `${pending.length} leave request${pending.length===1?'':'s'} need${pending.length===1?'s':''} your attention.`
+    : `No pending approvals right now — you're all caught up.`;
+
+  const hrPulse = `
+  <div class="bg-gradient-to-r from-indigo-600 via-indigo-700 to-purple-700 rounded-3xl p-6 sm:p-7 mb-6 text-white shadow-lg shadow-indigo-500/20 card-pop">
+    <div class="flex items-center justify-between mb-5">
+      <p class="text-[11px] font-extrabold uppercase tracking-widest text-white/70">Today at ${esc(COMPANY.name)}</p>
+      <span class="text-[11px] font-semibold text-white/60">${fmtDateLong(todayStr())}</span>
+    </div>
+    <div class="grid grid-cols-3 gap-4 sm:gap-6 mb-5">
+      <div>
+        <p class="font-display text-3xl sm:text-4xl font-black leading-none">${attendancePct}%</p>
+        <p class="text-[11px] sm:text-xs font-bold text-white/70 mt-1.5">Attendance</p>
+      </div>
+      <div>
+        <p class="font-display text-3xl sm:text-4xl font-black leading-none">${onLeaveToday}</p>
+        <p class="text-[11px] sm:text-xs font-bold text-white/70 mt-1.5">On Leave</p>
+      </div>
+      <div>
+        <p class="font-display text-3xl sm:text-4xl font-black leading-none">${pending.length}</p>
+        <p class="text-[11px] sm:text-xs font-bold text-white/70 mt-1.5">Pending Actions</p>
+      </div>
+    </div>
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-4 border-t border-white/15">
+      <p class="text-xs sm:text-sm text-white/90 leading-relaxed">
+        <span class="mr-1">${pulseTone.emoji}</span><span class="font-bold">${pulseTone.headline}</span>
+        ${attendancePct}% of employees have checked in today. ${pulseAction}
+      </p>
+      ${pending.length ? `
+        <a href="#/leave" class="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-white text-indigo-700 hover:bg-white/90 text-xs font-extrabold shadow-sm transition shrink-0">
+          Review ${icon('arrowRight','w-3.5 h-3.5')}
+        </a>` : ''}
+    </div>
+  </div>`;
 
   return `
   <!-- HR Header -->
@@ -280,6 +324,8 @@ function viewHRDashboard(user){
       </a>
     </div>
   </div>
+
+  ${hrPulse}
 
   <!-- HR Stat Cards -->
   <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">

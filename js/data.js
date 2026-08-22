@@ -314,19 +314,25 @@ function login(identifier, password){
   return { ok:true };
 }
 
-function signup({ name, email, phone, password, confirm, dob, gender, maritalStatus, address, bankName, accountNumber, ifsc, about, loves, hobbies, skills }){
+function signup({ name, email, phone, password, confirm, dob, gender, maritalStatus, nationality, address, panNo, uanNo, bankName, accountNumber, ifsc, about, loves, hobbies, skills }){
   name = (name||'').trim();
   email = (email||'').trim().toLowerCase();
   phone = (phone||'').trim();
+  panNo = (panNo||'').trim().toUpperCase();
+  uanNo = (uanNo||'').trim();
 
   if(!name || name.length < 2) return { ok:false, error:'Please enter your full name.' };
   if(!emailRe.test(email)) return { ok:false, error:'Please enter a valid work email address.' };
   if(!phoneRe.test(phone)) return { ok:false, error:'Please enter a valid mobile number.' };
+  if(!panRe.test(panNo)) return { ok:false, error:'Please enter a valid PAN number (format: ABCDE1234F).' };
+  if(!uanRe.test(uanNo)) return { ok:false, error:'Please enter a valid 12-digit UAN number.' };
   if(!password || password.length < 6) return { ok:false, error:'Password must be at least 6 characters.' };
   if(password !== confirm) return { ok:false, error:'Passwords do not match.' };
 
   const db = getDB();
   if(findEmployeeByIdentifier(db, email)) return { ok:false, error:'An account with this email already exists.' };
+  if(db.employees.some(e => (e.panNo||'').toUpperCase() === panNo)) return { ok:false, error:'An account with this PAN number already exists.' };
+  if(db.employees.some(e => (e.uanNo||'') === uanNo)) return { ok:false, error:'An account with this UAN number already exists.' };
 
   const parts = name.split(' ').filter(Boolean);
   const first = parts[0] || 'User';
@@ -351,16 +357,16 @@ function signup({ name, email, phone, password, confirm, dob, gender, maritalSta
     dateOfJoining: todayStr(),
     dob: dob || '1998-01-01',
     gender: gender || 'Prefer not to say',
-    nationality: 'Indian',
+    nationality: (nationality||'').trim() || 'Indian',
     maritalStatus: maritalStatus || 'Single',
     residingAddress: address || 'Bengaluru, Karnataka',
     bank: {
       accountNumber: accountNumber || '',
       bankName: bankName || 'HDFC Bank',
-      ifsc: ifsc || 'HDFC0001234'
+      ifsc: (ifsc||'').trim().toUpperCase() || 'HDFC0001234'
     },
-    panNo: `ABCDE${Math.floor(1000+Math.random()*8999)}Z`,
-    uanNo: `1009${Math.floor(10000000+Math.random()*89999999)}`,
+    panNo,
+    uanNo,
     skills: Array.isArray(skills) && skills.length ? skills : ['Problem Solving', 'Team Collaboration', 'Communication'],
     about: about || `Joined ${COMPANY.name} to build great software and collaborate with an amazing team.`,
     loves: loves || 'Collaborating with cross-functional teammates and shipping high-impact features.',
@@ -387,7 +393,20 @@ function signup({ name, email, phone, password, confirm, dob, gender, maritalSta
 function logout(){ clearSession(); navigate('#/login'); }
 
 /* ---- Employee Profile Mutations ---- */
+/* Restricts a mutation to the record owner only (used for About, Skills, Certifications,
+   Private Info, and Bank Details — HR can view every employee's profile but must not be
+   able to edit these employee-owned sections, even by calling the function directly). */
+function assertOwnerOnly(employeeId){
+  const session = getSession();
+  if(!session || session.employeeId !== employeeId){
+    return { ok:false, error:'You do not have permission to edit this section. Only the employee themselves can update it.' };
+  }
+  return null;
+}
+
 function updatePrivateInfo(employeeId, data){
+  const denied = assertOwnerOnly(employeeId);
+  if(denied) return denied;
   const db = getDB();
   const emp = db.employees.find(e => e.id === employeeId);
   if(!emp) return { ok:false, error:'Employee not found.' };
@@ -406,6 +425,8 @@ function updatePrivateInfo(employeeId, data){
 }
 
 function updateBankDetails(employeeId, data){
+  const denied = assertOwnerOnly(employeeId);
+  if(denied) return denied;
   const db = getDB();
   const emp = db.employees.find(e => e.id === employeeId);
   if(!emp) return { ok:false, error:'Employee not found.' };
@@ -420,6 +441,8 @@ function updateBankDetails(employeeId, data){
 }
 
 function updateAboutAndInterests(employeeId, { about, loves, hobbies }){
+  const denied = assertOwnerOnly(employeeId);
+  if(denied) return denied;
   const db = getDB();
   const emp = db.employees.find(e => e.id === employeeId);
   if(!emp) return { ok:false, error:'Employee not found.' };
@@ -467,6 +490,8 @@ function setUserVibe(employeeId, vibe){
 }
 
 function addSkill(employeeId, skill){
+  const denied = assertOwnerOnly(employeeId);
+  if(denied) return denied;
   if(!skill || !skill.trim()) return { ok:false, error:'Invalid skill.' };
   const db = getDB();
   const emp = db.employees.find(e => e.id === employeeId);
@@ -480,6 +505,8 @@ function addSkill(employeeId, skill){
 }
 
 function removeSkill(employeeId, skill){
+  const denied = assertOwnerOnly(employeeId);
+  if(denied) return denied;
   const db = getDB();
   const emp = db.employees.find(e => e.id === employeeId);
   if(!emp) return { ok:false, error:'Employee not found.' };
@@ -489,6 +516,8 @@ function removeSkill(employeeId, skill){
 }
 
 function addCertification(employeeId, cert){
+  const denied = assertOwnerOnly(employeeId);
+  if(denied) return denied;
   if(!cert.name || !cert.issuer) return { ok:false, error:'Please provide a certification name and issuer.' };
   const db = getDB();
   const emp = db.employees.find(e => e.id === employeeId);
@@ -500,6 +529,8 @@ function addCertification(employeeId, cert){
 }
 
 function updateCertification(employeeId, certId, cert){
+  const denied = assertOwnerOnly(employeeId);
+  if(denied) return denied;
   const db = getDB();
   const emp = db.employees.find(e => e.id === employeeId);
   if(!emp) return { ok:false, error:'Employee not found.' };
@@ -512,6 +543,8 @@ function updateCertification(employeeId, certId, cert){
 }
 
 function deleteCertification(employeeId, certId){
+  const denied = assertOwnerOnly(employeeId);
+  if(denied) return denied;
   const db = getDB();
   const emp = db.employees.find(e => e.id === employeeId);
   if(!emp) return { ok:false, error:'Employee not found.' };

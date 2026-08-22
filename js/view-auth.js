@@ -114,7 +114,6 @@ function viewLogin(state){
           <label for="f-password" class="block text-xs font-bold text-slate-700 uppercase tracking-wide">
             Password
           </label>
-          <span class="text-[11px] text-indigo-600 font-semibold">Demo: Admin@123 / Emp@123</span>
         </div>
         <input id="f-password" type="password" class="${inputCls}" placeholder="••••••••" required autocomplete="current-password">
       </div>
@@ -128,49 +127,6 @@ function viewLogin(state){
       <p class="text-xs text-slate-500">
         New employee? <a href="#/signup" class="text-indigo-600 font-bold hover:underline">Create Account / Onboard</a>
       </p>
-    </div>
-
-    <!-- Quick 1-Click Demo Logins -->
-    <div class="mt-6 pt-5 border-t border-slate-100">
-      <div class="flex items-center justify-between mb-2.5">
-        <p class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">⚡ 1-Click Demo Logins</p>
-        <button id="auth-reset-db-btn" class="text-[11px] font-semibold text-slate-400 hover:text-indigo-600 transition" title="Clean and re-seed database">
-          🔄 Reset Demo Data
-        </button>
-      </div>
-      <div class="grid grid-cols-2 gap-2 text-xs">
-        <button type="button" data-demo="hr" class="p-2.5 rounded-xl bg-purple-50 hover:bg-purple-100/80 border border-purple-200/80 text-left transition flex items-center gap-2">
-          <span class="text-base">👩‍💼</span>
-          <div class="min-w-0">
-            <p class="font-bold text-purple-900 truncate">HR Manager</p>
-            <p class="text-[10px] text-purple-600 truncate">Ananya Sharma</p>
-          </div>
-        </button>
-
-        <button type="button" data-demo="dev" class="p-2.5 rounded-xl bg-indigo-50 hover:bg-indigo-100/80 border border-indigo-200/80 text-left transition flex items-center gap-2">
-          <span class="text-base">👨‍💻</span>
-          <div class="min-w-0">
-            <p class="font-bold text-indigo-900 truncate">Engineer</p>
-            <p class="text-[10px] text-indigo-600 truncate">Rahul Verma</p>
-          </div>
-        </button>
-
-        <button type="button" data-demo="design" class="p-2.5 rounded-xl bg-emerald-50 hover:bg-emerald-100/80 border border-emerald-200/80 text-left transition flex items-center gap-2">
-          <span class="text-base">🎨</span>
-          <div class="min-w-0">
-            <p class="font-bold text-emerald-900 truncate">UI Designer</p>
-            <p class="text-[10px] text-emerald-600 truncate">Priya Nair</p>
-          </div>
-        </button>
-
-        <button type="button" data-demo="sales" class="p-2.5 rounded-xl bg-amber-50 hover:bg-amber-100/80 border border-amber-200/80 text-left transition flex items-center gap-2">
-          <span class="text-base">💼</span>
-          <div class="min-w-0">
-            <p class="font-bold text-amber-900 truncate">Sales Lead</p>
-            <p class="text-[10px] text-amber-600 truncate">Karthik Iyer</p>
-          </div>
-        </button>
-      </div>
     </div>`;
 
   return AuthShell('Welcome back!', 'Sign in to access your Odoo India workspace.', body);
@@ -195,44 +151,6 @@ function bindLogin(){
       toast('Signed in successfully — Welcome!', 'success');
       playChime('success');
       navigate('#/dashboard');
-    });
-  }
-
-  // Quick 1-click Demo Logins
-  $$('[data-demo]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const type = btn.getAttribute('data-demo');
-      const creds = {
-        hr:     { ident: 'hr@odooindia.com', pass: 'Admin@123' },
-        dev:    { ident: 'rahul.verma@odooindia.com', pass: 'Emp@123' },
-        design: { ident: 'priya.nair@odooindia.com', pass: 'Emp@123' },
-        sales:  { ident: 'karthik.iyer@odooindia.com', pass: 'Emp@123' },
-      };
-      const c = creds[type];
-      if(c){
-        const res = login(c.ident, c.pass);
-        if(res.ok){
-          APP.authError = null;
-          toast(`Logged in as ${type.toUpperCase()}`, 'success');
-          playChime('success');
-          navigate('#/dashboard');
-        } else {
-          // If credentials fail, reset db and retry
-          resetDatabase();
-          login(c.ident, c.pass);
-          navigate('#/dashboard');
-        }
-      }
-    });
-  });
-
-  const resetBtn = $('#auth-reset-db-btn');
-  if(resetBtn){
-    resetBtn.addEventListener('click', () => {
-      resetDatabase();
-      toast('Demo database refreshed to defaults!', 'success');
-      playChime('success');
-      render();
     });
   }
 }
@@ -286,6 +204,41 @@ function viewSignup(state){
 
       <div class="grid sm:grid-cols-2 gap-3">
         <div>
+          <label for="f-marital" class="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-1">
+            Marital Status
+          </label>
+          <select id="f-marital" class="${inputCls}">
+            <option value="Single" selected>Single</option>
+            <option value="Married">Married</option>
+            <option value="Divorced">Divorced</option>
+            <option value="Widowed">Widowed</option>
+          </select>
+        </div>
+        <div>
+          <label for="f-nationality" class="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-1">
+            Nationality
+          </label>
+          <input id="f-nationality" class="${inputCls}" placeholder="Indian" value="Indian">
+        </div>
+      </div>
+
+      <div class="grid sm:grid-cols-2 gap-3">
+        <div>
+          <label for="f-pan" class="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-1">
+            PAN Number *
+          </label>
+          <input id="f-pan" class="${inputCls}" placeholder="ABCDE1234F" maxlength="10" required style="text-transform:uppercase">
+        </div>
+        <div>
+          <label for="f-uan" class="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-1">
+            UAN Number *
+          </label>
+          <input id="f-uan" class="${inputCls}" placeholder="100200300400" required>
+        </div>
+      </div>
+
+      <div class="grid sm:grid-cols-2 gap-3">
+        <div>
           <label for="f-bank" class="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-1">
             Bank Name
           </label>
@@ -297,6 +250,13 @@ function viewSignup(state){
           </label>
           <input id="f-acc" class="${inputCls}" placeholder="50100293841029">
         </div>
+      </div>
+
+      <div>
+        <label for="f-ifsc" class="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-1">
+          IFSC Code
+        </label>
+        <input id="f-ifsc" class="${inputCls}" placeholder="HDFC0001234" style="text-transform:uppercase">
       </div>
 
       <div>
@@ -357,8 +317,13 @@ function bindSignup(){
         phone: $('#f-phone').value,
         dob: $('#f-dob')?.value,
         gender: $('#f-gender')?.value,
+        maritalStatus: $('#f-marital')?.value,
+        nationality: $('#f-nationality')?.value,
+        panNo: $('#f-pan')?.value,
+        uanNo: $('#f-uan')?.value,
         bankName: $('#f-bank')?.value,
         accountNumber: $('#f-acc')?.value,
+        ifsc: $('#f-ifsc')?.value,
         loves: $('#f-loves')?.value,
         hobbies: $('#f-hobbies')?.value,
         password: $('#f-password').value,
