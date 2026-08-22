@@ -4,7 +4,9 @@
 
 Dayflow is a lightweight Human Resource Management System (HRMS) web application developed for the **Odoo × NMIT Bangalore Hackathon**. It provides a simple, interactive platform for managing employee and HR workflows such as attendance, breaks, leave, payroll, employee profiles, and HR analytics.
 
-🔗 **Live Demo:** https://ananya-ramesh767.github.io/HRMS/
+🔗 **Live Demo Website:** https://ananya-ramesh767.github.io/HRMS/
+
+ **Demo Video:** https://www.loom.com/share/10239b6840e54cb5b3fdf1fff0056b3b
 
 ## Quick Start
 
@@ -12,7 +14,7 @@ No installation or setup is required.
 
 Simply open `index.html` in a browser, or visit the live demo:
 
-**Live Demo:** https://ananya-ramesh767.github.io/HRMS/
+**Live Demo Website:** https://ananya-ramesh767.github.io/HRMS/
 
 The application runs entirely on the client side using HTML, CSS, JavaScript, and browser `localStorage`.
 
