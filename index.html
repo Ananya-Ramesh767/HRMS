@@ -3,28 +3,32 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Dayflow — HRMS</title>
+<title>Odoo India — Dayflow HRMS</title>
+<meta name="description" content="Next-generation HRMS for Odoo India - Workforce management, time off, payroll, and rich employee experience." />
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
   tailwind.config = {
     theme: {
       extend: {
         colors: {
-          ink: '#1B2333',
-          paper: '#F5F6F8',
-          primary: { DEFAULT:'#2F5DE3', dark:'#2447BE', light:'#EEF1FE' },
-          success: { DEFAULT:'#3E9C6F', light:'#E7F5EE' },
-          warning: { DEFAULT:'#D98E2B', light:'#FBF1E1' },
-          danger:  { DEFAULT:'#E15252', light:'#FCEAEA' },
+          ink: '#0F172A',
+          paper: '#F8FAFC',
+          primary: { DEFAULT:'#4F46E5', dark:'#4338CA', light:'#EEF2FF' },
+          success: { DEFAULT:'#059669', light:'#ECFDF5' },
+          warning: { DEFAULT:'#D97706', light:'#FFFBEB' },
+          danger:  { DEFAULT:'#E11D48', light:'#FFF1F2' },
+          accent:  { DEFAULT:'#7C3AED', light:'#F5F3FF' },
+          teal:    { DEFAULT:'#0D9488', light:'#F0FDFA' },
         },
         fontFamily: {
-          display: ['Sora','sans-serif'],
-          sans: ['Inter','sans-serif'],
+          display: ['Sora', 'sans-serif'],
+          sans: ['Plus Jakarta Sans', 'sans-serif'],
         },
         boxShadow: {
-          card: '0 1px 2px rgba(27,35,51,0.06), 0 1px 12px rgba(27,35,51,0.05)',
+          card: '0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05)',
         }
       }
     }
@@ -32,12 +36,11 @@
 </script>
 <link rel="stylesheet" href="css/styles.css">
 </head>
-<body class="text-ink">
+<body class="text-ink bg-slate-50 min-h-screen">
 <div id="root"></div>
-<div id="toast-root" class="fixed bottom-5 right-5 z-[100] flex flex-col gap-2 items-end"></div>
+<div id="toast-root" class="fixed bottom-6 right-6 z-[100] flex flex-col gap-2.5 items-end pointer-events-none"></div>
 
-<!-- Data layer, utilities, and view modules — load order matters since these
-     are plain scripts (no bundler) that share the global scope. -->
+<!-- Data layer, utilities, and view modules -->
 <script src="js/utils.js"></script>
 <script src="js/data.js"></script>
 <script src="js/icons.js"></script>
